@@ -1,0 +1,3 @@
+exportPattern("^[[:alpha:]]+")
+#' @import R6
+#' @import ggplo2
