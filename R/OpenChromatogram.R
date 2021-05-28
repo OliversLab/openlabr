@@ -1,3 +1,5 @@
+source("R/data.R")
+source("R/global.R")
 
 
 
