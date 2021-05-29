@@ -1,16 +1,41 @@
-source("R/data.R")
-source("R/global.R")
+#' This an open source format for dealing with chromatograms in R
+#' @title OpenChromatogram class
+#' @docType class
+#' @examples
+#' data(carbChrom)
+#' OpenChromatogram$new("UV210nm", carbChrom$mAU, carbChrom$Time,
+#'                     "min", "mAU") -> chrom
+#' plot(chrom)
+#' @import tidyverse
+#' @import ggplot2
+#' @export
 
 
-
-chromatogram <- R6::R6Class(
+OpenChromatogram <- R6::R6Class(
   "OpenChromatogram",
   public = list(
+    #' @field detector String indicating the detector type
     detector = NULL,
+
+    #' @field time_trace String indicating the name of the time domain trace
     time_trace = NULL,
+
+    #' @field signal_trace String indicating the name of signal trace
     signal_trace = NULL,
+
+    #' @field unit_time String indicating the time unit
     unit_time = NA,
+
+    #' @field unit_signal String indicating the detector signal unit
     unit_signal = NA,
+
+    #' @description OpenChromatogram is used for plotting chromatogram data
+    #' @param detector String object  indicating the detector type
+    #' @param signal_trace String object indicating the name of the time domain trace
+    #' @param time_trace String object indicating the name of signal trace
+    #' @param unit_time String object indicating the time unit
+    #' @param unit_signal String object indicating the detector signal unit
+    #' @returns an R6 class object of OpenChromatogram
     initialize = function(detector=NULL, signal_trace=NULL, time_trace=NULL,
                           unit_time, unit_signal) {
       self$detector <- detector
@@ -20,6 +45,8 @@ chromatogram <- R6::R6Class(
       self$unit_signal <- unit_signal
     },
 
+    #' @description Creates a ggplot2 object from the class
+    #' @returns a ggplot2 object
     plot = function() {
 
       plot_data <- data.frame(time_trace=self$time_trace, signal_trace=self$signal_trace)
@@ -37,9 +64,14 @@ chromatogram <- R6::R6Class(
         geom_line(aes(y=second_derivative*10, colour="second")) +
         geom_ribbon(aes(ymin=0,ymax=as.numeric(peak_detected), fill="peak detected"), alpha=.2) +
         labs(x=paste0("Time [", self$unit_time, "]"),
-             y=paste0("Signal [", self$unit_signal, "]"))
+             y=paste0("Signal [", self$unit_signal, "]")) -> pl
+
+      return(pl)
     },
 
+    #' @description Integrates the chromatogram using a given threshold
+    #' @param threshold threshold for peak detection
+    #' @returns a data.frame with three columns, first and second derivative and peak detection
     peak_detect = function(threshold=0.001) {
 
       peak_detected = vector()
@@ -75,17 +107,4 @@ chromatogram <- R6::R6Class(
 
   )
 )
-
-
-
-chromatogram$new("UV210nm", Carbocisteine$mAU, Carbocisteine$Time,
-                 "min", "mAU") -> chrom
-
-
-plot(chrom) -> pl
-
-pl+coord_cartesian(ylim=c(-5,5), xlim=c(2,3))
-
-pl+coord_cartesian(ylim=c(-5,5), xlim=c(4,6))
-pl+coord_cartesian(ylim=c(-.05,.05), xlim=c(4,6))
 

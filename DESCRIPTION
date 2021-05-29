@@ -1,13 +1,24 @@
 Package: openlabr
 Type: Package
 Title: Collection of tools to use with mrgsolve simulations
-Version: 0.1.0
-Author: person("Oliver", "Scherf-Clavel", email = "oliver.scherf-clavel@gmx.de",
-                  role = c("aut", "cre"))
-Maintainer: The package maintainer <oliver.scherf-clavel@gmx.de>
+Version: 0.0.1
+Author@R: c(
+    person("Oliver", "Scherf-Clavel", email = "oliver.scherf-clavel@gmx.de", role = c("aut", "cre")))
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: GNU GENERAL PUBLIC LICENSE
+License: GPL-3
+URL: https://github.com/OliversLab/openlabr
+BugReports: https://github.com/OliversLab/openlabr/issues
+Depends:
+    R (>= 4.0.5)
+Imprts:
+    tidyverse,
+    mrgsolve,
+    ggplot2,
+    R6
+VignetteBuilder:
+    knitr
 Encoding: UTF-8
+Languate: en-US
 LazyData: true
 RoxygenNote: 7.1.1

@@ -46,3 +46,7 @@ The result is a ggplot object
 \description{
 Create a plot with prediction intervals from mrgsim result and optional observed data
 }
+\examples{
+data(ruxSim)
+create_pred_plot(ruxSim)
+}

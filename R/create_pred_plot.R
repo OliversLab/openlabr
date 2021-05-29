@@ -10,6 +10,9 @@
 #' @param text_size specify text size for labels and title
 #' @param obs a data.frame containing two columns called \code{x} and \code{y} with independent and dependent variable of the observations
 #' @returns The result is a ggplot object
+#' @examples
+#' data(ruxSim)
+#' create_pred_plot(ruxSim)
 #' @import tidyverse
 #' @import mrgsolve
 #' @import ggplot2

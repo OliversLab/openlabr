@@ -5,6 +5,9 @@
 #' @param id_column name of the column containing ID
 #' @param evid_column name of the column containing event-ID
 #' @returns a data.frame containing the independent variable, the 2.5th, 5th, 25th, 50th, 75th, 95th and 97.5th percentile of the dependent variable
+#' @examples
+#' data(ruxSim)
+#' create_pred_int(ruxSim)
 #' @import tidyverse
 #' @import mrgsolve
 #' @export

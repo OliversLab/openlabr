@@ -29,3 +29,7 @@ a data.frame containing the independent variable, the 2.5th, 5th, 25th, 50th, 75
 \description{
 Create predictions intervals from mrgsim result
 }
+\examples{
+data(ruxSim)
+create_pred_int(ruxSim)
+}
