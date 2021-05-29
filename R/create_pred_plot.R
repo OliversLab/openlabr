@@ -1,46 +1,19 @@
-
-# x = mrgsim object
-create_pred_int <- function(x, dv_column="IPRED", time_column="time", id_column="ID", evid_column="evid") {
-
-  x %>%  as_tibble -> x_tibble
-
-  x_tibble[x_tibble[evid_column]==0,] -> x_tibble_obs_only
-
-  ids <- x_tibble_obs_only[id_column] %>% unique() %>% simplify() %>% unname()
-  max_ids <- length(ids)
-
-  n_observations <- x_tibble_obs_only[ x_tibble_obs_only[id_column] == 1,] %>% nrow()
-  temp_time <-  x_tibble_obs_only[ x_tibble_obs_only[id_column] == 1,][time_column] %>% simplify() %>% unname()
-
-  ## reserve memory for the matrix
-  empty_data <- matrix(nrow=n_observations, ncol=max_ids, byrow = T)
-
-  for (k in 1:max_ids) {
-    empty_data[,k] <-x_tibble_obs_only[ x_tibble_obs_only[id_column] == ids[k],] [[dv_column]]
-
-  }
-
-  ## Retrieve quantiles of MC simulation
-  sim_quantiles <- apply(t(empty_data),2,function(x) quantile(x,probs=c(0.025,
-                                                                        0.975,
-                                                                        0.5,
-                                                                        0.05,
-                                                                        0.95,
-                                                                        0.25,
-                                                                        0.75)
-                                                              )
-                         )
-
-  result <- data.frame(time=temp_time, perc_2.5=sim_quantiles[1,],perc_97.5=sim_quantiles[2,], median=sim_quantiles[3,],
-                       perc_5=sim_quantiles[4,],perc_95=sim_quantiles[5,],
-                       perc_25=sim_quantiles[6,],perc_75=sim_quantiles[7,])
-
-  class(result) <- c("data.frame", "open_sim")
-
-  return(result)
-
-}
-
+#' Create a plot with prediction intervals from mrgsim result and optional observed data
+#' @param x mrgsim result (must contain an event-ID column)
+#' @param median_colour specify colour of the median line
+#' @param obs_colour specify colour of the observations
+#' @param obs_shape specify shape of the observations
+#' @param y_lab specify label of the y-axis
+#' @param x_lab specify label of x-axis
+#' @param plot_title specify plot title
+#' @param plot_subtitle specify plot subtitle
+#' @param text_size specify text size for labels and title
+#' @param obs a data.frame containing two columns called \code{x} and \code{y} with independent and dependent variable of the observations
+#' @returns The result is a ggplot object
+#' @import tidyverse
+#' @import mrgsolve
+#' @import ggplot2
+#' @export
 
 create_pred_plot <- function (x, intervall_colour ="red",
                               median_colour="darkblue",
@@ -95,7 +68,7 @@ create_pred_plot <- function (x, intervall_colour ="red",
       guides(alpha = guide_legend(override.aes = list(alpha = c(0.12,0.08,0.04) )),
              colour = guide_legend(override.aes = list(linetype=c(1,NA),
                                                        shape=c(NA,obs_shape)))
-             ) +
+      ) +
       labs(alpha="Prediction Intervall", colour="", x=x_lab, y=y_lab) +
       ggtitle(plot_title, plot_subtitle) +
       theme(legend.position = "bottom", axis.text = element_text(size=text_size),
@@ -107,8 +80,3 @@ create_pred_plot <- function (x, intervall_colour ="red",
   return(result_plot)
 
 }
-
-create_pred_plot(mrgsim_object_example)
-
-
-
