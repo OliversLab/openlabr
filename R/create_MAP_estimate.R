@@ -10,7 +10,7 @@
 
 create_MAP_estimate <- function (x, tdm_data, ycol_name="CONC", dvcol_name="IPRED", init_etas){
 
-  mapbayes <- function(eta,d,ycol,mod,dvcol,pred=FALSE) {
+  mapbayes <- function(eta,d,ycol,mod,dvcol) {
     sigma_m <- smat (mod)
     as.matrix (sigma_m) -> sigma_m
     sigma_m [1,1]-> prop
@@ -22,8 +22,7 @@ create_MAP_estimate <- function (x, tdm_data, ycol_name="CONC", dvcol_name="IPRE
 
     eta_m <- eta %>% matrix(nrow=1)
     mod <-  param(mod,eta)
-    out <- mod %>% zero_re() %>% mrgsim(data=d,output="df")
-    if(pred) return(out)
+    out <- mod %>% zero_re() %>% ev(d) %>%  carry_out(evid) %>%  mrgsim(output="df", end=-1, add=tdm_data$time) %>% filter(evid==0)
     # http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3339294/
     sig2j <- out[[dvcol]]^2*prop + add
     sqwres <- log(sig2j) + (1/sig2j)*(d[[ycol]] - out[[dvcol]])^2
@@ -40,3 +39,4 @@ create_MAP_estimate <- function (x, tdm_data, ycol_name="CONC", dvcol_name="IPRE
   return(map_data)
 
 }
+
