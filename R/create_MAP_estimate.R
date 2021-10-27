@@ -25,7 +25,7 @@ create_MAP_estimate <- function (x, tdm_data, ycol_name="CONC", dvcol_name="IPRE
     out <- mod %>% zero_re() %>% ev(d) %>%  carry_out(evid) %>%  mrgsim(output="df", end=-1, add=tdm_data$time) %>% filter(evid==0)
     # http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3339294/
 
-    sig2j <- (out[[dvcol]]*prop + add)^2
+    sig2j <- out[[dvcol]]^2*prop + add
     sqwres <- log(sig2j) + (1/sig2j)*(d[[ycol]] - out[[dvcol]])^2
     nOn <- diag(eta_m %*% omega_m_inv %*% t(eta_m))
     return(sum(sqwres,na.rm=TRUE) + nOn)
